@@ -10,7 +10,7 @@ class Article extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'body', 'category_id'];
+    protected $fillable = ['title', 'body', 'category_id', 'image'];
 
     //OBTENER EL ID DEL USUARIO CON SESIÓN ACTIVA
     public static function boot()
