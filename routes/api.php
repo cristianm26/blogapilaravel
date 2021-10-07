@@ -35,6 +35,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('articles', [ArticleController::class, 'store']);
     Route::put('articles/{id}',  [ArticleController::class, 'update']);
     Route::delete('articles/{id}', [ArticleController::class, 'delete']);
+    Route::get('articles/{article}/image', [ArticleController::class, 'image']);
     //Comentarios
     // Comments
     Route::get('articles/{article}/comments', [CommentController::class, 'index']);

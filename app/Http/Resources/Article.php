@@ -21,7 +21,8 @@ class Article extends JsonResource
             'title' => $this->title,
             'body' => $this->body,
             'user' => User::find($this->user_id),
-            'category' => Category::find($this->category_id)
+            'category' => Category::find($this->category_id),
+            'image' => $this->image
         ];
     }
 }
