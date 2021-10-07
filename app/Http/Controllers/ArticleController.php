@@ -30,6 +30,11 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $article = Article::create($request->all());
+        //OBTENER EL ID DEL USUARIO CON SESIÓN ACTIVA
+        /*   $article = new Article($request->all());
+        $article->user_id = Auth::id();
+        $article->save();
+        return response()->json(new ArticleResource($article), 201); */
         return response()->json($article, 201);
     }
     // Funcion para actualizar el articulo por el id
