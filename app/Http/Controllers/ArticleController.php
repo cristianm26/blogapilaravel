@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Article as ResourcesArticle;
+use App\Http\Resources\ArticleCollection;
 use App\Models\Article;
 use Illuminate\Http\Request;
 
@@ -10,14 +12,18 @@ class ArticleController extends Controller
     //
     public function index()
     {
-        return Article::all();
+        //return response()->json(ResourcesArticle::collection(Article::all(), 200));
+        return new ArticleCollection(Article::paginate(5));
+        //return response()->json(new ArticleCollection(Article::all(), 200));
+        // return Article::all();
     }
 
     // Funcion para obtener el articulo por el id
     public function show($id)
     {
         $article = Article::find($id);
-        return response()->json($article, 201);
+        return response()->json(new ResourcesArticle($article, 201));
+        // return response()->json($article, 201);
     }
 
     // Funcion para obtener el articulo por el cuerpo del articulo
