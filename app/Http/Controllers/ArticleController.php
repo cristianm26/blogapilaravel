@@ -15,6 +15,7 @@ class ArticleController extends Controller
     public function index()
     {
         //return response()->json(ResourcesArticle::collection(Article::all(), 200));
+        // $this->authorize('viewAny', Article::class);
         return new ArticleCollection(Article::paginate(5));
         //return response()->json(new ArticleCollection(Article::all(), 200));
         // return Article::all();
@@ -24,6 +25,7 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::find($id);
+        $this->authorize('view', $article);
         return response()->json(new ResourcesArticle($article, 201));
         // return response()->json($article, 201);
     }
@@ -59,7 +61,7 @@ class ArticleController extends Controller
                 "error_list" => $validator->errors()
             ], 400);
         }
-
+        $this->authorize('create', Article::class);
         $article = new Article($request->all());
         $path = $request->image->store('public/articles');
         //        $path = $request->image->storeAs('public/articles', $request->user()->id . '_' . $article->title . '.' . $request->image->extension());
@@ -81,6 +83,8 @@ class ArticleController extends Controller
     // Funcion para actualizar el articulo por el id
     public function update(Request $request, $id)
     {
+
+
         $messages = [
             'required' => 'El campo :attribute es obligatorio.',
             'same' => 'Los campos :attribute y :other deben coincidir.',
@@ -103,7 +107,9 @@ class ArticleController extends Controller
             ], 400);
         }
         $article = Article::findOrFail($id);
+        $this->authorize('update', $article);
         $article->update($request->all());
+
         return response()->json($article, 200);
     }
 
@@ -117,6 +123,7 @@ class ArticleController extends Controller
     // Funcion para eliminar el articulo por el id
     public function delete($id)
     {
+        $this->authorize('delete', $id);
         $article = Article::findOrFail($id);
         $article->delete();
         return 204;

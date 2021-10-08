@@ -31,6 +31,7 @@ Route::get('articles', [ArticleController::class, 'index']);
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('user', [UserController::class, 'getAuthenticatedUser']);
     //Articulos
+
     Route::get('articles/{id}', [ArticleController::class, 'show']);
     Route::post('articles', [ArticleController::class, 'store']);
     Route::put('articles/{id}',  [ArticleController::class, 'update']);
