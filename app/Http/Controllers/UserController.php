@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\User as ResourcesUser;
 use App\Models\User;
+use App\Models\Writer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -38,21 +40,38 @@ de iniciar sesión. */
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed'
+            'password' => 'required|string|min:6|confirmed',
+            'editorial' => 'required|string',
+            'short_bio' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
+        $writer = Writer::create([
+            'editorial' => $request->get('editorial'),
+            'short_bio' => $request->get('short_bio'),
+        ]);
 
-        $user = User::create([
+        $writer->user()->create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+        ]);
+
+        $user = $writer->user;
+
+        $token = JWTAuth::fromUser($writer->user);
+
+        return response()->json(new ResourcesUser($user, $token), 201);
+        /* $user = User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
 
         $token = JWTAuth::fromUser($user);
-        return response()->json(compact('user', 'token'), 201);
+        return response()->json(new ResourcesUser($user, $token), 201); */
     }
 
     /* El método getAuthenticatedUser retorna el objeto del usuario basado en el token de autorización 
@@ -74,6 +93,6 @@ recibido. */
         } catch (JWTException $e) {
             return response()->json(['token_absent']);
         }
-        return response()->json(compact('user'));
+        return response()->json(new ResourcesUser($user), 200);
     }
 }
